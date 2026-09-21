@@ -1,0 +1,254 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8daec78e-d689-4681-ace5-1c1103f52cb6",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n\n  \"event\": \"n8n Automation Bootcamp\",\n\n  \"event_date\": \"2026-10-04\",\n\n  \"venue\": \"Abuja\",\n\n  \"registrations\": [\n\n    { \"fn\": \"Ada\", \"ln\": \"Nwosu\", \"em\": \"ada@analyticalengines.io\", \"tkt\": \"vip\", \"amt\": 75000, \"pd\": true },\n\n    { \"fn\": \"Musa\", \"ln\": \"Bello\", \"em\": \"musa@kanofoods.com\", \"tkt\": \"regular\", \"amt\": 25000, \"pd\": true },\n\n    { \"fn\": \"Ife\", \"ln\": \"Adeyemi\", \"em\": \"ife@lagoslogistics.com\", \"tkt\": \"student\", \"amt\": 10000, \"pd\": false },\n\n    { \"fn\": \"Sarah\", \"ln\": \"Kent\", \"em\": \"sarah@northwind.co.uk\", \"tkt\": \"vip\", \"amt\": 75000, \"pd\": true },\n\n    { \"fn\": \"Tunde\", \"ln\": \"Okafor\", \"em\": \"tunde@sunrisehealth.ng\", \"tkt\": \"regular\", \"amt\": 25000, \"pd\": false },\n\n    { \"fn\": \"Ngozi\", \"ln\": \"Eze\", \"em\": \"ngozi@brightpath.ng\", \"tkt\": \"complimentary\", \"amt\": 0, \"pd\": true },\n\n    { \"fn\": \"Chidi\", \"ln\": \"Obi\", \"em\": \"chidi@meridian.ng\", \"tkt\": \"student\", \"amt\": 10000, \"pd\": true }\n\n  ]\n\n}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "87b3a2c2-55e2-4605-adc0-28573957090a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "registrations",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "d8c97721-17fd-455c-a4c0-b7efe000b5aa",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "432831cc-6bb3-4b20-b368-a9f108d85475",
+              "name": "first_name",
+              "value": "={{ $json.fn }}",
+              "type": "string"
+            },
+            {
+              "id": "a2d09890-011a-45fc-afe6-cc0aacd11a30",
+              "name": "last_name",
+              "value": "={{ $json.ln }}",
+              "type": "string"
+            },
+            {
+              "id": "d0d6835b-a370-47fe-a1a9-132d1ce35c0e",
+              "name": "full_name",
+              "value": "={{ $json.fn }} {{ $json.ln }}",
+              "type": "string"
+            },
+            {
+              "id": "37cdc149-87c0-48b0-91af-96757963d61e",
+              "name": "email",
+              "value": "={{ $json.em }}",
+              "type": "string"
+            },
+            {
+              "id": "c4451369-69c1-4aaa-af24-9f9198606dcb",
+              "name": "ticket_type",
+              "value": "={{ $json.tkt }}",
+              "type": "string"
+            },
+            {
+              "id": "4a07d9ec-b479-4009-aa6e-8ac44ce24b49",
+              "name": "amount",
+              "value": "={{ $json.amt }}",
+              "type": "number"
+            },
+            {
+              "id": "e2353a37-8c9e-4b20-b87b-0d2b5a159cf2",
+              "name": "paid",
+              "value": "={{ $json.pd }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        672,
+        0
+      ],
+      "id": "c0c705db-4c46-4e9d-aab7-e7836a71a99b",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.ticket_type }}",
+                    "rightValue": "vip",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "66f73e9b-a986-4e2c-98f1-5996155b2562"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "vip"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "eee74ea2-5584-480e-9784-b48261a50def",
+                    "leftValue": "={{ $json.ticket_type }}",
+                    "rightValue": "regular",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Regular"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "84e6600c-8b29-4660-bb9b-7d7878e96c41",
+                    "leftValue": "={{ $json.ticket_type }}",
+                    "rightValue": "student",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Student"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        0
+      ],
+      "id": "0999efa2-5f24-46d2-8313-b83f68c82acc",
+      "name": "Switch"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "aaa12125-2ad8-4f80-82b6-df4a89a282d4",
+  "meta": {
+    "instanceId": "dfead19998a1d48134f2436792281345a90dd33c1f379e192812dfa90ad765c8"
+  },
+  "nodeGroups": [],
+  "id": "FCqcZvtFSoMH4wrv",
+  "tags": []
+}
