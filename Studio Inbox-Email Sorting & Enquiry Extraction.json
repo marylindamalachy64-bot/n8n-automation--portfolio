@@ -1,0 +1,595 @@
+{
+  "name": "Studio Inbox-Email Sorting & Enquiry Extraction",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -640,
+        -880
+      ],
+      "id": "f35291fc-7681-4675-aab3-45eeb422d7d3",
+      "name": "Receive New Email",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_GMAIL_OAUTH_CREDENTIAL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "New client enquiry",
+              "description": "=A new person contacting the interior design studio to ask about a new interior design, renovation, decoration, or property project "
+            },
+            {
+              "category": "Existing client",
+              "description": "A current client contacting the studio about an existing project, including project updates, questions, follow-ups, or complaints."
+            },
+            {
+              "category": "Job application",
+              "description": "Someone contacting the studio to apply for a job, ask about employment opportunities, or submit a CV or resume"
+            },
+            {
+              "category": "Spam",
+              "description": "An unwanted, irrelevant, promotional, suspicious, or scam email that is not a genuine client enquiry, existing client message, or job application."
+            },
+            {
+              "category": "Other",
+              "description": "An email that does not clearly fit the new client enquiry, existing client, job application, or spam categories. Keep it visible for manual review."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        -928
+      ],
+      "id": "f9fc01e2-2cb9-4a81-812a-42dd31db9fff",
+      "name": "Classify Email"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.text }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "name",
+              "description": "The full name of the person making the enquiry. If no name is provided, leave it empty."
+            },
+            {
+              "name": "email",
+              "description": "The email address of the person making the enquiry. If no email address is provided, leave it empty"
+            },
+            {
+              "name": "phone",
+              "description": "The phone number provided by the person making the enquiry. If no phone number is provided, leave it empty"
+            },
+            {
+              "name": "project_type",
+              "description": "The type of interior design project the person is asking about, such as a house, apartment, room, renovation, or commercial space. If not provided, leave it empty."
+            },
+            {
+              "name": "budget",
+              "type": "number",
+              "description": "The client's stated project budget converted to a number. If no budget is provided, leave it empty. Do not invent a budget."
+            },
+            {
+              "name": "property_location",
+              "description": "The location of the property mentioned in the enquiry. If no property location is provided, leave it empty."
+            },
+            {
+              "name": "start_timeline",
+              "description": "When the client wants the project to start. If no start date or timeline is provided, leave it empty."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -1264
+      ],
+      "id": "7c215302-58b1-4793-82f2-7c3f90477599",
+      "name": "Extract Client Details"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_REDACTED_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $json.output.name }}",
+            "email": "={{ $json.output.email }}",
+            "phone": "={{ $json.output.phone }}",
+            "project_type": "={{ $json.output.project_type }}",
+            "budget": "={{ $json.output.budget }}",
+            "property_location": "={{ $json.output.property_location }}",
+            "start_timeline": "={{ $json.output.start_timeline }}",
+            "ready_to_go": "={{ $json.ready_to_go }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "project_type",
+              "displayName": "project_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "budget",
+              "displayName": "budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "property_location",
+              "displayName": "property_location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "start_timeline",
+              "displayName": "start_timeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ready_to_go",
+              "displayName": "ready_to_go",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "output",
+              "displayName": "output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        -1264
+      ],
+      "id": "53f76114-6ce6-4ac7-95cc-ffc7d39e9508",
+      "name": "Save Client Enquiry",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_GOOGLE_SHEETS_CREDENTIAL",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-5",
+          "cachedResultName": "Claude Sonnet 5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.6,
+      "position": [
+        -400,
+        -624
+      ],
+      "id": "f36e87ce-c05c-4565-a64f-229bac224300",
+      "name": "Classification AI Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-5",
+          "cachedResultName": "Claude Sonnet 5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.6,
+      "position": [
+        -160,
+        -1088
+      ],
+      "id": "821b9c53-7a9e-4da7-b023-5dbc967c0303",
+      "name": "Extraction AI Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "redacted@example.com",
+        "subject": "[Existing Client] Client Update",
+        "emailType": "text",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        592,
+        -1056
+      ],
+      "id": "4eeddc47-c144-4421-a0eb-96fc20171ab0",
+      "name": "Send Existing Client Update1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_GMAIL_OAUTH_CREDENTIAL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "redacted@example.com",
+        "subject": "[Job Application] New Application",
+        "emailType": "text",
+        "message": "={{ $('Receive New Email').item.json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        -736
+      ],
+      "id": "3c55aa4b-eb24-457a-a469-ede6fd25c6aa",
+      "name": "Job Application Update",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_GMAIL_OAUTH_CREDENTIAL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "redacted@example.com",
+        "subject": "[Spam] Spam Email Notification",
+        "emailType": "text",
+        "message": "={{ $('Receive New Email').item.json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        -592
+      ],
+      "id": "87bb8290-6b1c-40cd-a5ba-269db884c971",
+      "name": "Send Spam Notification",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_GMAIL_OAUTH_CREDENTIAL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1786b3e3-3f71-42e0-a6fa-eef1c9d26fbb",
+              "name": "ready_to_go",
+              "value": "={{ !!$json.output.budget && !!$json.output.start_timeline }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        -1264
+      ],
+      "id": "02d0c6e9-db0e-4611-a0bf-1e4a1198eea3",
+      "name": "Prepare Sheet Data"
+    },
+    {
+      "parameters": {
+        "sendTo": "redacted@example.com",
+        "subject": "[other] inbox message",
+        "emailType": "text",
+        "message": "={{ $('Receive New Email').item.json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        -544
+      ],
+      "id": "21d7ff2d-0616-4516-ac54-beb0e0a9d229",
+      "name": "Send Other Notification",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_GMAIL_OAUTH_CREDENTIAL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-5",
+          "cachedResultName": "Claude Sonnet 5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.6,
+      "position": [
+        224,
+        -880
+      ],
+      "id": "a851e1e3-db4b-437b-a6fa-79c328501138",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Draft a short, polite and professional reply to this existing client email. Acknowledge their message, be helpful, and do not invent information or make promises that are not contained in the email{{ $('Receive New Email').item.json.text }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        224,
+        -1056
+      ],
+      "id": "50f82ba8-e82e-46a5-a1b8-cd701d6a9b2d",
+      "name": "Draft Client Reply"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Receive New Email": {
+      "main": [
+        [
+          {
+            "node": "Classify Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Email": {
+      "main": [
+        [
+          {
+            "node": "Extract Client Details",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Draft Client Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Job Application Update",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Spam Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Other Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Client Details": {
+      "main": [
+        [
+          {
+            "node": "Prepare Sheet Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classification AI Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Classify Email",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraction AI Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extract Client Details",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Sheet Data": {
+      "main": [
+        [
+          {
+            "node": "Save Client Enquiry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Draft Client Reply",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft Client Reply": {
+      "main": [
+        [
+          {
+            "node": "Send Existing Client Update1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "tags": []
+}
