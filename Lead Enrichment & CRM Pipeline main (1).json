@@ -1,0 +1,621 @@
+{
+  "name": "Lead Enrichment & CRM Pipeline main",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-intake",
+        "options": {}
+      },
+      "id": "19ee05b6-47d6-4bf3-84e4-ee1b9f3e471a",
+      "name": "Lead Form Submission",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -240,
+        -160
+      ],
+      "webhookId": "878c38df-32c8-4f40-aeb9-71e268d784a8",
+      "notesInFlow": true,
+      "notes": "Receives new lead submissions from the website through a POST webhook, including the lead's name, email, company name, and website."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Clean & Normalize Lead Data\n// Receives the lead from the webhook and creates clean,\n// consistent fields for validation, enrichment, scoring, and CRM.\n\nreturn $input.all().map(item => {\n  const data = item.json.body || item.json;\n\n  // -----------------------------\n  // 1. Clean basic lead fields\n  // -----------------------------\n\n  const name = String(data.name || '').trim();\n\n  const email = String(data.email || '')\n    .trim()\n    .toLowerCase();\n\n  const companyName = String(data.companyName || '')\n    .trim();\n\n  const website = String(data.website || '')\n    .trim();\n\n  // -----------------------------\n  // 2. Split name into first/last\n  // -----------------------------\n\n  const nameParts = name.split(/\\s+/).filter(Boolean);\n\n  const firstName = nameParts.length > 0\n    ? nameParts[0]\n    : '';\n\n  const lastName = nameParts.length > 1\n    ? nameParts.slice(1).join(' ')\n    : '';\n\n  // -----------------------------\n  // 3. Clean company name\n  // Removes common legal suffixes\n  // -----------------------------\n\n  const cleanCompanyName = companyName\n    .replace(\n      /\\b(ltd|limited|llc|inc|incorporated|corp|corporation|co|company|plc)\\b\\.?/gi,\n      ''\n    )\n    .replace(/\\s+/g, ' ')\n    .trim();\n\n  // -----------------------------\n  // 4. Normalize website/domain\n  // -----------------------------\n\n  let domain = website\n    .toLowerCase()\n    .trim();\n\n  // Remove protocol\n  domain = domain.replace(/^https?:\\/\\//, '');\n\n  // Remove www.\n  domain = domain.replace(/^www\\./, '');\n\n  // Remove everything after the domain\n  domain = domain.split('/')[0];\n\n  // Remove query string and hash\n  domain = domain.split('?')[0];\n  domain = domain.split('#')[0];\n\n  // Remove trailing dot\n  domain = domain.replace(/\\.$/, '');\n\n  // -----------------------------\n  // 5. Validate basic format\n  // -----------------------------\n\n  const missingFields = [];\n\n  if (!name) {\n    missingFields.push('name');\n  }\n\n  if (!email) {\n    missingFields.push('email');\n  }\n\n  if (!companyName) {\n    missingFields.push('companyName');\n  }\n\n  if (!website) {\n    missingFields.push('website');\n  }\n\n  // -----------------------------\n  // 6. Return clean lead\n  // -----------------------------\n\n  return {\n    json: {\n      ...data,\n\n      // Original cleaned fields\n      name,\n      email,\n      companyName,\n      website,\n\n      // Normalized fields\n      firstName,\n      lastName,\n      cleanCompanyName,\n      domain,\n\n      // Validation helper\n      missingFields,\n      isValidBasicData: missingFields.length === 0\n    }\n  };\n});"
+      },
+      "id": "289221f7-89dd-4318-8227-d31fdba9c624",
+      "name": "Clean & Normalize Lead Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        -160
+      ],
+      "notesInFlow": true,
+      "notes": "Cleans and standardizes incoming lead data, extracts the submitted fields from the webhook body, and prepares the lead information for validation and enrichment."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f39da9db-7398-4c28-8df7-f6348dc139e4",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "eb8373f4-2bab-44b3-9967-02018ac82e26",
+              "leftValue": "={{ $json.website }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "4260019e-9848-4ac9-82ec-01430f1c400d",
+              "leftValue": "={{ $json.companyName }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "aa8d645b-eafb-43b9-882d-0fb376518022",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a7876365-17de-4f24-aa63-f8bb7920d98e",
+      "name": "Validate Lead Data",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        192,
+        -160
+      ],
+      "notesInFlow": true,
+      "notes": "Checks that each lead contains a name, email, company name, and website. Valid leads continue to enrichment, while leads missing required information are sent to the error log in Google Sheets."
+    },
+    {
+      "parameters": {
+        "actorSource": "store",
+        "actorId": {
+          "__rl": true,
+          "value": "YlUtLWjfPpqykmB8g",
+          "mode": "list",
+          "cachedResultName": "Company Firmographics: Employees Industry HQ Revenue Clay (mambalabs/company-firmographic-enricher)",
+          "cachedResultUrl": "https://console.apify.com/actors/YlUtLWjfPpqykmB8g/input"
+        },
+        "customBody": "={\n  \"domain\": \"{{ $json.domain }}\"\n}",
+        "timeout": {},
+        "authentication": "apifyOAuth2Api"
+      },
+      "id": "66da68b1-b2e0-43c9-86ee-fab59ba50249",
+      "name": "Enrich Company Details",
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -480
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "apifyOAuth2Api": {
+          "id": "53nFLmL24mR94Pby",
+          "name": "Apify account"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "notes": "Uses the Apify company enrichment actor to look up company information from the lead's website domain and retrieve available firmographic details for lead scoring."
+    },
+    {
+      "parameters": {
+        "resource": "Datasets",
+        "datasetId": "={{ $json.defaultDatasetId }}",
+        "options": {},
+        "authentication": "apifyOAuth2Api"
+      },
+      "id": "2709b3f9-d097-40b9-83fd-bef66a227252",
+      "name": "Get dataset items",
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        656,
+        -496
+      ],
+      "alwaysOutputData": true,
+      "notesInFlow": true,
+      "credentials": {
+        "apifyOAuth2Api": {
+          "id": "53nFLmL24mR94Pby",
+          "name": "Apify account"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "Retrieves the company enrichment results from the Apify dataset. If an error occurs, the workflow continues so the failure can be handled downstream rather than stopping the entire workflow immediately."
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-d8R7fYAgL14oORApdUyBG4vZAgId-LQt3hcxsKHZkM",
+          "mode": "list",
+          "cachedResultName": "Lead Enrichment Error  Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-d8R7fYAgL14oORApdUyBG4vZAgId-LQt3hcxsKHZkM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-d8R7fYAgL14oORApdUyBG4vZAgId-LQt3hcxsKHZkM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.name }}",
+            "Email": "={{ $json.email }}",
+            "Company": "={{ $json.companyName }}",
+            "Website": "={{ $json.website }}",
+            "Error": "={{ $json.error?.message || ($json.isValidBasicData === false ? 'Lead validation failed: required information is missing.' : 'Lead enrichment/API lookup failed') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Website",
+              "displayName": "Website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Error",
+              "displayName": "Error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "9cf23895-9288-4c7a-9a18-5f8d211813ac",
+      "name": "Log Enrichment Errors",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1824,
+        -144
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "QinGYYDeJQhi6D9w",
+          "name": "Google Sheets account"
+        }
+      },
+      "notes": "Logs leads that fail validation or encounter enrichment errors in Google Sheets, including lead details and an error message for review."
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "5783d4f5-494a-47f6-9393-63104247f08e",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        944,
+        -480
+      ],
+      "notesInFlow": true,
+      "notes": "Combines the original validated lead information with the company enrichment results from Apify, matching items by position so the lead details and company data can be used together in the next step."
+    },
+    {
+      "parameters": {
+        "operation": "Run actor and get dataset",
+        "actorSource": "store",
+        "actorId": {
+          "__rl": true,
+          "value": "9Sk4JJhEma9vBKqrg",
+          "mode": "list",
+          "cachedResultName": "Contact Details Scraper (vdrmota/contact-info-scraper)",
+          "cachedResultUrl": "https://console.apify.com/actors/9Sk4JJhEma9vBKqrg/input"
+        },
+        "customBody": "={\n  \"startUrls\": [\n    {\n      \"url\": \"{{ $('Clean & Normalize Lead Data').item.json.website }}\"\n    }\n  ],\n  \"maxRequestsPerStartUrl\": 3,\n  \"maxDepth\": 2,\n  \"mergeContacts\": true,\n  \"sameDomain\": true\n}",
+        "timeout": {},
+        "authentication": "apifyOAuth2Api"
+      },
+      "id": "63a7e9db-7524-4f79-bfad-a265ed94e603",
+      "name": "Enrich Contact Details",
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        -480
+      ],
+      "alwaysOutputData": true,
+      "notesInFlow": true,
+      "credentials": {
+        "apifyOAuth2Api": {
+          "id": "53nFLmL24mR94Pby",
+          "name": "Apify account"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "notes": "Uses the Apify Contact Details Scraper to scan the lead's company website for publicly available contact information, including email addresses and phone numbers. If the node encounters an execution error, the error output routes the failure to the error-log path."
+    },
+    {
+      "parameters": {
+        "jsCode": "// ==========================================\n// CALCULATE LEAD SCORE\n// Uses the data received directly from Merge1\n// ==========================================\n\nconst items = $input.all();\n\nreturn items.map((item) => {\n  const data = item.json || {};\n\n  // ------------------------------------------\n  // 1. BASIC LEAD DATA\n  // ------------------------------------------\n  const firstName = data.firstName || '';\n  const lastName = data.lastName || '';\n  const name = data.name || `${firstName} ${lastName}`.trim();\n  const email = data.email || '';\n  const companyName = data.companyName || data.company_name || '';\n  const website = data.website || '';\n  const country = data.country || '';\n\n  // ------------------------------------------\n  // 2. COMPANY ENRICHMENT DATA\n  // ------------------------------------------\n  const industry = data.industry || '';\n  const employeeCount =\n    Number(data.employee_count) ||\n    Number(data.employeeCount) ||\n    0;\n\n  const employeeBand =\n    data.employee_band ||\n    data.employeeBand ||\n    '';\n\n  // ------------------------------------------\n  // 3. CONTACT ENRICHMENT DATA\n  // ------------------------------------------\n  const scrapedEmails = Array.isArray(data.emails)\n    ? data.emails\n    : [];\n\n  const scrapedPhones = Array.isArray(data.phones)\n    ? data.phones\n    : [];\n\n  const linkedIns = Array.isArray(data.linkedIns)\n    ? data.linkedIns\n    : [];\n\n  const twitters = Array.isArray(data.twitters)\n    ? data.twitters\n    : [];\n\n  // ------------------------------------------\n  // 4. SCORING\n  // ------------------------------------------\n  let score = 0;\n  const reasons = [];\n\n  // COUNTRY SCORE\n  const normalizedCountry = country.toLowerCase().trim();\n\n  if (\n    normalizedCountry === 'united states' ||\n    normalizedCountry === 'usa' ||\n    normalizedCountry === 'us'\n  ) {\n    score += 50;\n    reasons.push('Tier-1 country (US): +50');\n  } else if (\n    normalizedCountry === 'united kingdom' ||\n    normalizedCountry === 'uk'\n  ) {\n    score += 40;\n    reasons.push('Tier-1 country (UK): +40');\n  } else if (country) {\n    score += 20;\n    reasons.push(`Country identified (${country}): +20`);\n  } else {\n    reasons.push('Country unavailable: +0');\n  }\n\n  // COMPANY SIZE SCORE\n  if (employeeCount >= 1000) {\n    score += 30;\n    reasons.push(`Large company (${employeeCount}+ employees): +30`);\n  } else if (employeeCount >= 100) {\n    score += 20;\n    reasons.push(`Medium company (${employeeCount}+ employees): +20`);\n  } else if (employeeCount >= 10) {\n    score += 10;\n    reasons.push(`Small company (${employeeCount}+ employees): +10`);\n  } else if (employeeBand) {\n    score += 10;\n    reasons.push(`Employee band available (${employeeBand}): +10`);\n  } else {\n    reasons.push('Employee count unavailable: +0');\n  }\n\n  // INDUSTRY SCORE\n  if (industry) {\n    score += 10;\n    reasons.push(`Industry identified (${industry}): +10`);\n  } else {\n    reasons.push('Industry unavailable: +0');\n  }\n\n  // CONTACT INFORMATION SCORE\n  if (email) {\n    score += 5;\n    reasons.push('Lead email provided: +5');\n  }\n\n  if (scrapedEmails.length > 0) {\n    score += 5;\n    reasons.push('Public company email found: +5');\n  }\n\n  // Keep score between 0 and 100\n  score = Math.min(score, 100);\n\n  // ------------------------------------------\n  // 5. LEAD TEMPERATURE\n  // ------------------------------------------\n  let leadTemperature;\n\n  if (score >= 70) {\n    leadTemperature = 'Hot';\n  } else if (score >= 40) {\n    leadTemperature = 'Warm';\n  } else {\n    leadTemperature = 'Cold';\n  }\n\n  // ------------------------------------------\n  // 6. RETURN CLEAN RESULT\n  // ------------------------------------------\n  return {\n    json: {\n      ...data,\n\n      firstName,\n      lastName,\n      name,\n      email,\n      companyName,\n      website,\n      country,\n\n      companyEnrichment: {\n        industry,\n        employee_count: employeeCount || null,\n        employee_band: employeeBand\n      },\n\n      contactEnrichment: {\n        emails: scrapedEmails,\n        phones: scrapedPhones,\n        linkedIns,\n        twitters\n      },\n\n      leadScore: score,\n      leadTemperature,\n      scoringReasons: reasons\n    }\n  };\n});"
+      },
+      "id": "cb1af341-da68-4a02-adf7-f4696d8d013d",
+      "name": "Calculate Lead Score",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        -480
+      ],
+      "notesInFlow": true,
+      "notes": "Calculates a score for each lead using the defined scoring rules and assigns a lead temperature, such as Hot, Warm, or Cold."
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "email": "={{ $json.email }}",
+        "additionalFields": {
+          "companyName": "={{ $json.cleanCompanyName }}",
+          "customPropertiesUi": {
+            "customPropertiesValues": [
+              {
+                "property": "lead_score",
+                "value": "={{ $json.leadScore }}"
+              },
+              {
+                "property": "lead_temperature",
+                "value": "={{ $json.leadTemperature }}"
+              }
+            ]
+          },
+          "firstName": "={{ $json.firstName }}",
+          "lastName": "={{ $json.lastName }}",
+          "websiteUrl": "={{ 'https://' + $json.domain }}"
+        },
+        "options": {}
+      },
+      "id": "5b470895-c403-40f4-b2c8-616d656b1591",
+      "name": "Create or update a contact",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        1856,
+        -480
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "hubspotOAuth2Api": {
+          "id": "XGFM56cG7hYHXpW9",
+          "name": "HubSpot account"
+        }
+      },
+      "notes": "Creates or updates a HubSpot contact using the cleaned company name and website, and saves the calculated lead score and temperature."
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1456,
+        -480
+      ],
+      "id": "25a3ddfc-dc70-404c-91f9-2020e5d6c5f3",
+      "name": "Merge1",
+      "notesInFlow": true,
+      "notes": "Combines the contact enrichment results with the existing lead and company information so the scoring node receives the combined data."
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        208
+      ],
+      "id": "1920a546-fec6-490e-a795-dcbb6613fcfe",
+      "name": "When clicking ‘Execute workflow’",
+      "notesInFlow": true,
+      "notes": "Manually starts the test workflow so the prepared sample leads can be sent to the main lead-processing workflow."
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      name: \"John Smith\",\n      email: \"marylinda.automation+lead01@gmail.com\",\n      companyName: \"Microsoft\",\n      website: \"https://microsoft.com\"\n    }\n  },\n  {\n    json: {\n      name: \"Sarah Johnson\",\n      email: \"marylinda.automation+lead02@gmail.com\",\n      companyName: \"Apple\",\n      website: \"https://apple.com\"\n    }\n  },\n  {\n    json: {\n      name: \"David Williams\",\n      email: \"marylinda.automation+lead03@gmail.com\",\n      companyName: \"Adobe\",\n      website: \"https://www.adobe.com\"\n    }\n  },\n  {\n    json: {\n      name: \"Emma Brown\",\n      email: \"marylinda.automation+lead04@gmail.com\",\n      companyName: \"Shopify\",\n      website: \"https://www.shopify.com\"\n    }\n  },\n  {\n    json: {\n      name: \"Michael Taylor\",\n      email: \"marylinda.automation+lead05@gmail.com\",\n      companyName: \"Toyota\",\n      website: \"https://www.toyota.com\"\n    }\n  },\n  {\n    json: {\n      name: \"Olivia Wilson\",\n      email: \"marylinda.automation+lead06@gmail.com\",\n      companyName: \"Unilever\",\n      website: \"https://www.unilever.com\"\n    }\n  },\n  {\n    json: {\n      name: \"Daniel Anderson\",\n      email: \"marylinda.automation+lead07@gmail.com\",\n      companyName: \"Siemens\",\n      website: \"https://www.siemens.com\"\n    }\n  },\n  {\n    json: {\n      name: \"Grace Thomas\",\n      email: \"\",\n      companyName: \"IBM\",\n      website: \"https://www.ibm.com\"\n    }\n  },\n  {\n    json: {\n      name: \"James Martin\",\n      email: \"marylinda.automation+lead08@gmail.com\",\n      companyName: \"Nike\",\n      website: \"\"\n    }\n  },\n  {\n    json: {\n      name: \"Sophia Davis\",\n      email: \"marylinda.automation+lead09@gmail.com\",\n      companyName: \"\",\n      website: \"https://www.spotify.com\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        208
+      ],
+      "id": "74fbb36c-67d8-41a9-9dca-9d493a2cbba7",
+      "name": "Code in JavaScript",
+      "notesInFlow": true,
+      "notes": "Creates 10 sample leads for testing the workflow, including 7 valid leads and 3 deliberately incomplete leads to test validation and error logging."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mgodwin.app.n8n.cloud/webhook/lead-intake",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=name",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "companyName",
+              "value": "={{ $json.companyName }}"
+            },
+            {
+              "name": "website",
+              "value": "={{ $json.website }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        416,
+        208
+      ],
+      "id": "c3277e08-ed32-4f2d-b36e-3387ae4017ce",
+      "name": "HTTP Request",
+      "notesInFlow": true,
+      "notes": "Sends each of the 10 test leads to the main workflow through its production webhook using HTTP POST requests, allowing the lead-processing workflow to be tested end to end."
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Lead Form Submission": {
+      "main": [
+        [
+          {
+            "node": "Clean & Normalize Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean & Normalize Lead Data": {
+      "main": [
+        [
+          {
+            "node": "Validate Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Lead Data": {
+      "main": [
+        [
+          {
+            "node": "Enrich Company Details",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Log Enrichment Errors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrich Company Details": {
+      "main": [
+        [
+          {
+            "node": "Get dataset items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Enrichment Errors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get dataset items": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Enrich Contact Details",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Enrich Contact Details": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Enrichment Errors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Lead Score": {
+      "main": [
+        [
+          {
+            "node": "Create or update a contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Calculate Lead Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9a862f22-f2ed-428b-9e0b-8d05720c9770",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "26cda4874be63beb0049f30bd6b3809dffbb64afc6b51615b01da552d906e64d"
+  },
+  "nodeGroups": [],
+  "id": "ilj8ljraO743CCnV",
+  "tags": []
+}
