@@ -2,7 +2,7 @@
 
 Exported automation workflows by Marylinda Malachy.
 
-I am learning n8n, voice agents, and API-based business automation. This repository is public so the workflow files and the notes next to them can be reviewed. The current files use placeholders instead of live account data. Older Git commits are unchanged. [Privacy and Git history](docs/privacy-and-history.md) explains that limit and the cleanup plan.
+I am learning n8n, voice agents, and API-based business automation. This repository is public so the workflow files and the notes next to them can be reviewed. The current files use placeholders instead of live account data. The writable Git history was rewritten and force-pushed so those older branch commits no longer contain the removed mailbox data. [Privacy and Git history](docs/privacy-and-history.md) records what that rewrite changed and which GitHub views can still serve the old commits.
 
 No license is specified.
 
@@ -60,11 +60,10 @@ python3 scripts/check_sanitization.py
 python3 scripts/check_docs.py
 ```
 
-## Still to do outside this branch
+## Still to do
 
-- Review this change before it is merged. Merging does not erase older commits.
 - Replace the placeholders in a private n8n or Vapi account and run the checklist in each project README.
 - Add screenshots or a demo video only after a real run.
-- Follow [Privacy and Git history](docs/privacy-and-history.md) if the older commits should stop being publicly readable.
+- Cached GitHub views and the read-only pull request ref can still serve the pre-rewrite commits. [Privacy and Git history](docs/privacy-and-history.md) has the measured result. Clearing those views requires GitHub Support and was not requested from here.
 - Build Sophie's six tools before expecting the receptionist to call them.
 - Choose a license if other people should have permission to reuse the files. None is set.

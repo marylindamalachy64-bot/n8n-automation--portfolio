@@ -1,10 +1,12 @@
 # Privacy and Git history
 
-This branch sanitizes the current files and corrects the portfolio notes. It does not rewrite Git history, force-push, change repository visibility, or delete the repository. The public repository URL stays the same. Until a later, separately authorized history rewrite, older commits on `main` still contain the pre-sanitization files.
+The current files are the sanitized portfolio. On 7 November 2026 the writable history of this repository was rewritten and published with an atomic `--force-with-lease` push. The repository is still public at the same URL. Visibility, access, and the repository itself were not changed. No second repository was created, and no backup ref containing the original files was pushed.
+
+This was not a complete erasure. The limits are listed below.
 
 ## What the current files no longer contain
 
-The exports on this branch had personal and third-party data and live account bindings removed or replaced:
+The exports had personal and third-party data and live account bindings removed or replaced:
 
 - A pinned Gmail item on the Studio Inbox trigger, including the message body, headers, and mailbox addresses. One of those addresses was the workflow owner's notification address. Others were not.
 - The owner's notification address, which had been hardcoded on Gmail send nodes in Studio Inbox and PharmaCare. Those nodes now use `owner.notifications@example.com`.
@@ -17,13 +19,41 @@ The exports on this branch had personal and third-party data and live account bi
 - A PharmaCare `errorWorkflow` id. The handler workflow was never in this repository. The setting is now `REPLACE_ERROR_WORKFLOW_ID`.
 - Six Vapi tool IDs, two Vapi knowledge-file IDs, and ElevenLabs voice IDs on Sophie.
 
-No raw API key, OAuth token, or password string was found in the current-tree JSON. Credential fields identified n8n credential records. Those record IDs were still account-specific, so they were replaced.
+No raw API key, OAuth token, or password string was found in the JSON. Credential fields identified n8n credential records. Those record IDs were still account-specific, so they were replaced.
 
-Anthropic and OpenAI nodes in the source exports used n8n's managed AI gateway (`__aiGatewayManaged` with an empty credential id). No provider API key was stored. This branch removes that gateway flag and points the nodes at `REPLACE_ANTHROPIC_API_CREDENTIAL` or `REPLACE_OPENAI_API_CREDENTIAL`, so an import does not depend on the original n8n account's gateway.
+Anthropic and OpenAI nodes in the source exports used n8n's managed AI gateway (`__aiGatewayManaged` with an empty credential id). No provider API key was stored. The sanitized files remove that gateway flag and point the nodes at `REPLACE_ANTHROPIC_API_CREDENTIAL` or `REPLACE_OPENAI_API_CREDENTIAL`.
 
 Public Apify store actor selections were kept. They identify the actors the workflow calls, not an Apify user.
 
-## Import behavior that changed
+## What the rewrite measured
+
+Immediately before the rewrite the remote had:
+
+| Item | Measured value |
+| --- | --- |
+| Unique commits | 10 |
+| Writable branches | `main`, `cursor/portfolio-privacy-docs-f4ac` |
+| Tags | 0 |
+| Forks | 0 |
+| Commits containing a flagged file blob | 7 |
+| Historical blobs rewritten | 6 |
+
+Those six blobs were the earlier copies of the workflow exports under their original filenames. The rewritten blobs drop non-empty pinned mailbox data, replace mailbox addresses with `redacted@example.com`, and replace account and resource identifiers with placeholders. Workflow node graphs, prompts, scoring code, and the public Apify actor selections were kept.
+
+Commit metadata had 9 public-mailbox author or committer fields. Those were rewritten to `portfolio-owner@example.com`. Author and committer names were not changed. Nine `github.com` fields and two `cursor.com` fields were left as recorded.
+
+The rewrite kept 10 commits. The already-sanitized portfolio tree was `d9ac1e71b137c726dc0d17d2d74a8ede41b89aaa` before and after the rewrite, on both the merge commit and the portfolio commit. This documentation commit is the only change after that.
+
+The atomic force-with-lease push was accepted:
+
+| Ref | Published rewritten tip before this note |
+| --- | --- |
+| `main` | `4fb0b20a19aca328168eee5de91ad8f3213c24b8` |
+| `cursor/portfolio-privacy-docs-f4ac` | `7f928c2693b89176b949c69fa3e254c920e54420` |
+
+No `refs/replace` or `refs/original` refs were created or pushed.
+
+## Import behavior that changed in the sanitized files
 
 | Change | Why |
 | --- | --- |
@@ -35,25 +65,25 @@ Public Apify store actor selections were kept. They identify the actors the work
 | Workflow `id` and `versionId` were removed. | Import should create a new workflow instead of colliding with the original ids. |
 | The lead HTTP node posts to `https://YOUR_N8N_HOST/webhook/lead-intake`. | Replace the host before any manual test. Do not point it at a live production webhook. |
 
-Workflow graphs, prompts, classifier categories, scoring code, and Sophie's system prompt are otherwise unchanged.
-
 ## What is still exposed
 
-Older commits, including the current `main` branch until this change is merged, still contain the original files. A public repository lets anyone who can open those commits read them. GitHub may also retain caches. Commit metadata on those commits includes the owner's email address. This branch does not rewrite author metadata, and this note does not repeat that address.
+Reachable branch history on `main` and `cursor/portfolio-privacy-docs-f4ac` no longer contains the removed mailbox content or the replaced identifiers. These copies still can:
 
-Merging this pull request updates only the new commits. It does not remove the old ones.
+- `refs/pull/1/head` still points at the pre-rewrite pull request head. Updating it by push was rejected with `deny updating a hidden ref`. The GitHub Git refs API returned HTTP 422 and `refs/pull/* is read-only`. That ref still reaches the old history. It was not deleted, because this account cannot write it.
+- The pull request record still reports the pre-rewrite head and merge commit. Immediately after the force-push, all 10 pre-rewrite commits were still returned by GitHub's commit API.
+- GitHub can keep serving a commit URL after no branch points at it. Purging those cached views is a GitHub Support action. Nobody was contacted from this cleanup.
+- Clones and downloads made before the rewrite still contain the old objects. They cannot be recalled. Do not push an old clone back to this repository.
+- No forks existed at the check. A fork taken from the old history would keep its own copy.
+- The pre-rewrite commit IDs are intentionally not repeated in this file.
 
-## Remediation plan
+## Still for the owner
 
-Do this only with a separate, explicit decision. None of it was done here.
-
-1. Treat the old commits as a disclosure of the pinned message and the account bindings listed above. If a third party's message was published, decide whether to tell them. Do not copy the message into a new commit, issue, or chat log.
-2. On the live n8n instance, change the lead webhook path if that workflow is still active, and deactivate workflows you do not want polling. Review the connected Gmail, Google Drive, Google Sheets, Apify, and HubSpot accounts. The Git files did not contain the OAuth tokens, but the workflows were bound to real credential records.
-3. In Vapi, review the assistant, the six tools, and the two knowledge files. The tool implementations are not in this repository, so they may still exist in the Vapi account.
-4. To remove the data from the public history while keeping this repository URL, rewrite history with a tool such as `git filter-repo` or BFG, force-push the rewritten branches, and ask GitHub Support to purge cached views. That invalidates existing clones and open pull requests based on the old history. It needs a force-push, which this task does not allow.
-5. The alternative that avoids a rewrite is to accept that the old commits remain readable for as long as the repository is public. Making the repository private would hide them from anonymous visitors and would also hide the portfolio URL. That visibility change was not made.
-6. After any future rewrite, run `python3 scripts/check_sanitization.py` on the new tree and review GitHub secret scanning. The checker looks at the current files only. It does not prove that history is clean.
+- Ask GitHub Support to purge the cached pre-rewrite commits and the read-only pull ref if those views must stop being public.
+- On the live n8n and Vapi accounts, review the credentials, webhook path, and knowledge files that the old exports were bound to. The Git files did not contain raw OAuth tokens.
+- Decide separately whether to tell a person whose message was in the old pinned mail. That message was not sent to anyone from this cleanup.
+- Replace the placeholders and run the project checklists before any live use.
+- Re-clone rather than reusing a clone created before the rewrite.
 
 ## Checker scope
 
-`scripts/check_sanitization.py` fails if the current JSON or Markdown contains a mailbox address outside `example.com`, `example.org`, or `example.net`, a URL host outside the placeholder and public Apify hosts, non-empty pin data, instance ids, raw credential ids, or Sophie resource ids that are not placeholders. It prints categories and counts, not matched values.
+`scripts/check_sanitization.py` and `scripts/check_docs.py` read the current files only. They do not prove that GitHub's cache or `refs/pull/1/head` is clean. A separate scan of the rewritten branch history found no remaining disallowed mailbox addresses, pinned message data, or account identifiers in those branches.
