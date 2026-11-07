@@ -97,9 +97,8 @@
       "name": "OpenAI Chat Model",
       "credentials": {
         "openAiApi": {
-          "id": null,
-          "name": "",
-          "__aiGatewayManaged": true
+          "id": "REPLACE_OPENAI_API_CREDENTIAL",
+          "name": "OpenAI account"
         }
       }
     },
@@ -140,9 +139,8 @@
       "name": "OpenAI Chat Model1",
       "credentials": {
         "openAiApi": {
-          "id": null,
-          "name": "",
-          "__aiGatewayManaged": true
+          "id": "REPLACE_OPENAI_API_CREDENTIAL",
+          "name": "OpenAI account"
         }
       }
     },
@@ -179,9 +177,8 @@
       "name": "Embeddings OpenAI",
       "credentials": {
         "openAiApi": {
-          "id": null,
-          "name": "",
-          "__aiGatewayManaged": true
+          "id": "REPLACE_OPENAI_API_CREDENTIAL",
+          "name": "OpenAI account"
         }
       }
     },
@@ -197,7 +194,7 @@
         "triggerOn": "specificFolder",
         "folderToWatch": {
           "__rl": true,
-          "value": "YOUR_REDACTED_DRIVE_FOLDER_ID",
+          "value": "YOUR_PHARMACARE_DRIVE_FOLDER_ID",
           "mode": "id"
         },
         "event": "fileCreated",
@@ -304,15 +301,14 @@
       "name": "Embeddings OpenAI1",
       "credentials": {
         "openAiApi": {
-          "id": null,
-          "name": "",
-          "__aiGatewayManaged": true
+          "id": "REPLACE_OPENAI_API_CREDENTIAL",
+          "name": "OpenAI account"
         }
       }
     },
     {
       "parameters": {
-        "sendTo": "redacted@example.com",
+        "sendTo": "owner.notifications@example.com",
         "subject": "Customer Support Escalation",
         "message": "=Customer Support  Escalation \nA customer email requires human review\n{{ $('Get a message').item.json.text }}",
         "options": {
@@ -477,7 +473,7 @@
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
@@ -487,7 +483,7 @@
     "availableInMCP": false
   },
   "meta": {
-    "templateCredsSetupCompleted": true
+    "templateCredsSetupCompleted": false
   },
   "nodeGroups": [],
   "tags": []

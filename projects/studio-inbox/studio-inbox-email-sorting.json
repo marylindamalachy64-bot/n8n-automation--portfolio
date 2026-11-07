@@ -1,5 +1,5 @@
 {
-  "name": "Studio Inbox-Email Sorting & Enquiry Extraction",
+  "name": "Studio Inbox — Email Sorting and Enquiry Extraction",
   "nodes": [
     {
       "parameters": {
@@ -119,14 +119,13 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "YOUR_REDACTED_SPREADSHEET_ID",
+          "value": "YOUR_STUDIO_ENQUIRY_SPREADSHEET_ID",
           "mode": "id"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "Sheet1"
+          "mode": "id"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -248,7 +247,7 @@
       "name": "Save Client Enquiry",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "REPLACE_GOOGLE_SHEETS_CREDENTIAL",
+          "id": "REPLACE_STUDIO_GOOGLE_SHEETS_CREDENTIAL",
           "name": "Google Sheets account"
         }
       }
@@ -273,9 +272,8 @@
       "name": "Classification AI Model",
       "credentials": {
         "anthropicApi": {
-          "id": null,
-          "name": "",
-          "__aiGatewayManaged": true
+          "id": "REPLACE_ANTHROPIC_API_CREDENTIAL",
+          "name": "Anthropic account"
         }
       }
     },
@@ -299,15 +297,14 @@
       "name": "Extraction AI Model",
       "credentials": {
         "anthropicApi": {
-          "id": null,
-          "name": "",
-          "__aiGatewayManaged": true
+          "id": "REPLACE_ANTHROPIC_API_CREDENTIAL",
+          "name": "Anthropic account"
         }
       }
     },
     {
       "parameters": {
-        "sendTo": "redacted@example.com",
+        "sendTo": "owner.notifications@example.com",
         "subject": "[Existing Client] Client Update",
         "emailType": "text",
         "message": "={{ $json.text }}",
@@ -330,7 +327,7 @@
     },
     {
       "parameters": {
-        "sendTo": "redacted@example.com",
+        "sendTo": "owner.notifications@example.com",
         "subject": "[Job Application] New Application",
         "emailType": "text",
         "message": "={{ $('Receive New Email').item.json.text }}",
@@ -353,7 +350,7 @@
     },
     {
       "parameters": {
-        "sendTo": "redacted@example.com",
+        "sendTo": "owner.notifications@example.com",
         "subject": "[Spam] Spam Email Notification",
         "emailType": "text",
         "message": "={{ $('Receive New Email').item.json.text }}",
@@ -400,7 +397,7 @@
     },
     {
       "parameters": {
-        "sendTo": "redacted@example.com",
+        "sendTo": "owner.notifications@example.com",
         "subject": "[other] inbox message",
         "emailType": "text",
         "message": "={{ $('Receive New Email').item.json.text }}",
@@ -441,9 +438,8 @@
       "name": "Anthropic Chat Model",
       "credentials": {
         "anthropicApi": {
-          "id": null,
-          "name": "",
-          "__aiGatewayManaged": true
+          "id": "REPLACE_ANTHROPIC_API_CREDENTIAL",
+          "name": "Anthropic account"
         }
       }
     },
@@ -588,7 +584,7 @@
     "binaryMode": "separate"
   },
   "meta": {
-    "templateCredsSetupCompleted": true
+    "templateCredsSetupCompleted": false
   },
   "nodeGroups": [],
   "tags": []
