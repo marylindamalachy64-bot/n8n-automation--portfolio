@@ -15,7 +15,6 @@
         -240,
         -160
       ],
-      "webhookId": "878c38df-32c8-4f40-aeb9-71e268d784a8",
       "notesInFlow": true,
       "notes": "Receives new lead submissions from the website through a POST webhook, including the lead's name, email, company name, and website."
     },
@@ -125,7 +124,7 @@
       "notesInFlow": true,
       "credentials": {
         "apifyOAuth2Api": {
-          "id": "53nFLmL24mR94Pby",
+          "id": "REPLACE_APIFY_OAUTH_CREDENTIAL",
           "name": "Apify account"
         }
       },
@@ -151,7 +150,7 @@
       "notesInFlow": true,
       "credentials": {
         "apifyOAuth2Api": {
-          "id": "53nFLmL24mR94Pby",
+          "id": "REPLACE_APIFY_OAUTH_CREDENTIAL",
           "name": "Apify account"
         }
       },
@@ -163,17 +162,13 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1-d8R7fYAgL14oORApdUyBG4vZAgId-LQt3hcxsKHZkM",
-          "mode": "list",
-          "cachedResultName": "Lead Enrichment Error  Log",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-d8R7fYAgL14oORApdUyBG4vZAgId-LQt3hcxsKHZkM/edit?usp=drivesdk"
+          "value": "YOUR_LEAD_ERROR_LOG_SPREADSHEET_ID",
+          "mode": "id"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-d8R7fYAgL14oORApdUyBG4vZAgId-LQt3hcxsKHZkM/edit#gid=0"
+          "mode": "id"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -253,7 +248,7 @@
       "notesInFlow": true,
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "QinGYYDeJQhi6D9w",
+          "id": "REPLACE_LEAD_GOOGLE_SHEETS_CREDENTIAL",
           "name": "Google Sheets account"
         }
       },
@@ -303,7 +298,7 @@
       "notesInFlow": true,
       "credentials": {
         "apifyOAuth2Api": {
-          "id": "53nFLmL24mR94Pby",
+          "id": "REPLACE_APIFY_OAUTH_CREDENTIAL",
           "name": "Apify account"
         }
       },
@@ -360,7 +355,7 @@
       "notesInFlow": true,
       "credentials": {
         "hubspotOAuth2Api": {
-          "id": "XGFM56cG7hYHXpW9",
+          "id": "REPLACE_HUBSPOT_OAUTH_CREDENTIAL",
           "name": "HubSpot account"
         }
       },
@@ -394,11 +389,11 @@
       "id": "1920a546-fec6-490e-a795-dcbb6613fcfe",
       "name": "When clicking ‘Execute workflow’",
       "notesInFlow": true,
-      "notes": "Manually starts the test workflow so the prepared sample leads can be sent to the main lead-processing workflow."
+      "notes": "Manual trigger for the synthetic lead fixture. It is not connected by a workflow wire to the processing path. The Code node feeds the HTTP Request node, which must target this workflow's own lead-intake webhook."
     },
     {
       "parameters": {
-        "jsCode": "return [\n  {\n    json: {\n      name: \"John Smith\",\n      email: \"marylinda.automation+lead01@gmail.com\",\n      companyName: \"Microsoft\",\n      website: \"https://microsoft.com\"\n    }\n  },\n  {\n    json: {\n      name: \"Sarah Johnson\",\n      email: \"marylinda.automation+lead02@gmail.com\",\n      companyName: \"Apple\",\n      website: \"https://apple.com\"\n    }\n  },\n  {\n    json: {\n      name: \"David Williams\",\n      email: \"marylinda.automation+lead03@gmail.com\",\n      companyName: \"Adobe\",\n      website: \"https://www.adobe.com\"\n    }\n  },\n  {\n    json: {\n      name: \"Emma Brown\",\n      email: \"marylinda.automation+lead04@gmail.com\",\n      companyName: \"Shopify\",\n      website: \"https://www.shopify.com\"\n    }\n  },\n  {\n    json: {\n      name: \"Michael Taylor\",\n      email: \"marylinda.automation+lead05@gmail.com\",\n      companyName: \"Toyota\",\n      website: \"https://www.toyota.com\"\n    }\n  },\n  {\n    json: {\n      name: \"Olivia Wilson\",\n      email: \"marylinda.automation+lead06@gmail.com\",\n      companyName: \"Unilever\",\n      website: \"https://www.unilever.com\"\n    }\n  },\n  {\n    json: {\n      name: \"Daniel Anderson\",\n      email: \"marylinda.automation+lead07@gmail.com\",\n      companyName: \"Siemens\",\n      website: \"https://www.siemens.com\"\n    }\n  },\n  {\n    json: {\n      name: \"Grace Thomas\",\n      email: \"\",\n      companyName: \"IBM\",\n      website: \"https://www.ibm.com\"\n    }\n  },\n  {\n    json: {\n      name: \"James Martin\",\n      email: \"marylinda.automation+lead08@gmail.com\",\n      companyName: \"Nike\",\n      website: \"\"\n    }\n  },\n  {\n    json: {\n      name: \"Sophia Davis\",\n      email: \"marylinda.automation+lead09@gmail.com\",\n      companyName: \"\",\n      website: \"https://www.spotify.com\"\n    }\n  }\n];"
+        "jsCode": "return [\n  {\n    json: {\n      name: \"Avery Stone\",\n      email: \"avery.stone@example.com\",\n      companyName: \"Northwind Studio\",\n      website: \"https://northwind.example\"\n    }\n  },\n  {\n    json: {\n      name: \"Blake Okonkwo\",\n      email: \"blake.okonkwo@example.com\",\n      companyName: \"Harbor and Co\",\n      website: \"https://harbor.example\"\n    }\n  },\n  {\n    json: {\n      name: \"Casey Nguyen\",\n      email: \"casey.nguyen@example.com\",\n      companyName: \"Lumen Field Labs\",\n      website: \"https://lumenfield.example\"\n    }\n  },\n  {\n    json: {\n      name: \"Devon Alvarez\",\n      email: \"devon.alvarez@example.com\",\n      companyName: \"Paper Kite Goods\",\n      website: \"https://paperkite.example\"\n    }\n  },\n  {\n    json: {\n      name: \"Ellis Rahman\",\n      email: \"ellis.rahman@example.com\",\n      companyName: \"Cedar Line Logistics\",\n      website: \"https://cedarline.example\"\n    }\n  },\n  {\n    json: {\n      name: \"Frankie Berg\",\n      email: \"frankie.berg@example.com\",\n      companyName: \"Mesa Clockworks\",\n      website: \"https://mesaclock.example\"\n    }\n  },\n  {\n    json: {\n      name: \"Gray Ibarra\",\n      email: \"gray.ibarra@example.com\",\n      companyName: \"Kindred Parcel\",\n      website: \"https://kindredparcel.example\"\n    }\n  },\n  {\n    json: {\n      name: \"Harper Quinn\",\n      email: \"\",\n      companyName: \"Example Missing Email Ltd\",\n      website: \"https://missing-email.example\"\n    }\n  },\n  {\n    json: {\n      name: \"Indigo Shah\",\n      email: \"indigo.shah@example.com\",\n      companyName: \"Example Missing Website Ltd\",\n      website: \"\"\n    }\n  },\n  {\n    json: {\n      name: \"Jules Moreau\",\n      email: \"jules.moreau@example.com\",\n      companyName: \"\",\n      website: \"https://missing-company.example\"\n    }\n  }\n];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -409,12 +404,12 @@
       "id": "74fbb36c-67d8-41a9-9dca-9d493a2cbba7",
       "name": "Code in JavaScript",
       "notesInFlow": true,
-      "notes": "Creates 10 sample leads for testing the workflow, including 7 valid leads and 3 deliberately incomplete leads to test validation and error logging."
+      "notes": "Creates 10 synthetic leads for a manual test harness: 7 complete leads and 3 deliberately incomplete leads. These people, companies, and example.com addresses are fictional fixtures, not a recorded run and not real customer data."
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "https://mgodwin.app.n8n.cloud/webhook/lead-intake",
+        "url": "https://YOUR_N8N_HOST/webhook/lead-intake",
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
@@ -447,7 +442,7 @@
       "id": "c3277e08-ed32-4f2d-b36e-3387ae4017ce",
       "name": "HTTP Request",
       "notesInFlow": true,
-      "notes": "Sends each of the 10 test leads to the main workflow through its production webhook using HTTP POST requests, allowing the lead-processing workflow to be tested end to end."
+      "notes": "POSTs each synthetic lead to the Lead Form Submission webhook. Replace YOUR_N8N_HOST with the n8n host for this imported workflow before any manual test. This file no longer contains a live webhook URL, and this branch has not been executed."
     }
   ],
   "pinData": {},
@@ -605,17 +600,14 @@
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "9a862f22-f2ed-428b-9e0b-8d05720c9770",
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "26cda4874be63beb0049f30bd6b3809dffbb64afc6b51615b01da552d906e64d"
+    "templateCredsSetupCompleted": false
   },
   "nodeGroups": [],
-  "id": "ilj8ljraO743CCnV",
   "tags": []
 }

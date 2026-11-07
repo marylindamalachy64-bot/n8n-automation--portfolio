@@ -9,23 +9,23 @@
     "voice": {
       "model": "eleven_turbo_v2_5",
       "speed": 1,
-      "voiceId": "Xb7hH8MSUJpSbSDYk0k2",
+      "voiceId": "YOUR_ELEVENLABS_VOICE_ID",
       "provider": "11labs",
       "fallbackPlan": {
         "voices": [
           {
             "model": "eleven_turbo_v2_5",
-            "voiceId": "pFZP5JQG7iQjIQuC4Bku",
+            "voiceId": "YOUR_ELEVENLABS_FALLBACK_VOICE_ID_1",
             "provider": "11labs"
           },
           {
             "model": "eleven_multilingual_v2",
-            "voiceId": "sarah",
+            "voiceId": "YOUR_ELEVENLABS_FALLBACK_VOICE_ID_2",
             "provider": "11labs"
           },
           {
             "model": "eleven_multilingual_v2",
-            "voiceId": "sarah",
+            "voiceId": "YOUR_ELEVENLABS_FALLBACK_VOICE_ID_3",
             "provider": "11labs"
           }
         ]
@@ -34,12 +34,12 @@
     "model": {
       "model": "gpt-4.1",
       "toolIds": [
-        "759bdedc-1bb8-4886-b03f-13c6d91a4e0f",
-        "bd71479a-678a-4603-b6c8-e9c6c3cd06d2",
-        "9fe9b062-8a78-4110-a2fa-833ace6def41",
-        "8b37dd50-0135-4d65-ad4a-e7bb39edd402",
-        "64d1323f-9e57-4793-ac47-3fb88f2b2181",
-        "e3bca943-4d86-4432-a341-7ef5bc822c36"
+        "REPLACE_VAPI_TOOL_ID_1",
+        "REPLACE_VAPI_TOOL_ID_2",
+        "REPLACE_VAPI_TOOL_ID_3",
+        "REPLACE_VAPI_TOOL_ID_4",
+        "REPLACE_VAPI_TOOL_ID_5",
+        "REPLACE_VAPI_TOOL_ID_6"
       ],
       "messages": [
         {
@@ -50,8 +50,8 @@
       "provider": "openai",
       "knowledgeBase": {
         "fileIds": [
-          "57fe523f-78aa-4464-a6d5-e93162c2c15e",
-          "16b6e50a-97b9-4059-bb83-a387b6f70d7b"
+          "YOUR_VAPI_KNOWLEDGE_FILE_ID_1",
+          "YOUR_VAPI_KNOWLEDGE_FILE_ID_2"
         ],
         "provider": "google"
       }

@@ -1,5 +1,5 @@
 {
-  "name": "My workflow",
+  "name": "Manual five-step event routing",
   "nodes": [
     {
       "parameters": {},
@@ -15,7 +15,7 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n\n  \"event\": \"n8n Automation Bootcamp\",\n\n  \"event_date\": \"2026-10-04\",\n\n  \"venue\": \"Abuja\",\n\n  \"registrations\": [\n\n    { \"fn\": \"Ada\", \"ln\": \"Nwosu\", \"em\": \"ada@analyticalengines.io\", \"tkt\": \"vip\", \"amt\": 75000, \"pd\": true },\n\n    { \"fn\": \"Musa\", \"ln\": \"Bello\", \"em\": \"musa@kanofoods.com\", \"tkt\": \"regular\", \"amt\": 25000, \"pd\": true },\n\n    { \"fn\": \"Ife\", \"ln\": \"Adeyemi\", \"em\": \"ife@lagoslogistics.com\", \"tkt\": \"student\", \"amt\": 10000, \"pd\": false },\n\n    { \"fn\": \"Sarah\", \"ln\": \"Kent\", \"em\": \"sarah@northwind.co.uk\", \"tkt\": \"vip\", \"amt\": 75000, \"pd\": true },\n\n    { \"fn\": \"Tunde\", \"ln\": \"Okafor\", \"em\": \"tunde@sunrisehealth.ng\", \"tkt\": \"regular\", \"amt\": 25000, \"pd\": false },\n\n    { \"fn\": \"Ngozi\", \"ln\": \"Eze\", \"em\": \"ngozi@brightpath.ng\", \"tkt\": \"complimentary\", \"amt\": 0, \"pd\": true },\n\n    { \"fn\": \"Chidi\", \"ln\": \"Obi\", \"em\": \"chidi@meridian.ng\", \"tkt\": \"student\", \"amt\": 10000, \"pd\": true }\n\n  ]\n\n}\n\n",
+        "jsonOutput": "{\n  \"event\": \"Sample Community Workshop\",\n  \"event_date\": \"2026-01-15\",\n  \"venue\": \"Example City\",\n  \"fixture_note\": \"Synthetic registrations for this manual demo. Not a real attendee list and not a recorded execution.\",\n  \"registrations\": [\n    {\n      \"fn\": \"Avery\",\n      \"ln\": \"Stone\",\n      \"em\": \"avery.stone@example.com\",\n      \"tkt\": \"vip\",\n      \"amt\": 100,\n      \"pd\": true\n    },\n    {\n      \"fn\": \"Blake\",\n      \"ln\": \"Okonkwo\",\n      \"em\": \"blake.okonkwo@example.com\",\n      \"tkt\": \"regular\",\n      \"amt\": 40,\n      \"pd\": true\n    },\n    {\n      \"fn\": \"Casey\",\n      \"ln\": \"Nguyen\",\n      \"em\": \"casey.nguyen@example.com\",\n      \"tkt\": \"student\",\n      \"amt\": 15,\n      \"pd\": false\n    },\n    {\n      \"fn\": \"Devon\",\n      \"ln\": \"Alvarez\",\n      \"em\": \"devon.alvarez@example.com\",\n      \"tkt\": \"vip\",\n      \"amt\": 100,\n      \"pd\": true\n    },\n    {\n      \"fn\": \"Ellis\",\n      \"ln\": \"Rahman\",\n      \"em\": \"ellis.rahman@example.com\",\n      \"tkt\": \"regular\",\n      \"amt\": 40,\n      \"pd\": false\n    },\n    {\n      \"fn\": \"Frankie\",\n      \"ln\": \"Berg\",\n      \"em\": \"frankie.berg@example.com\",\n      \"tkt\": \"complimentary\",\n      \"amt\": 0,\n      \"pd\": true\n    },\n    {\n      \"fn\": \"Gray\",\n      \"ln\": \"Ibarra\",\n      \"em\": \"gray.ibarra@example.com\",\n      \"tkt\": \"student\",\n      \"amt\": 15,\n      \"pd\": true\n    }\n  ]\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.set",
@@ -244,11 +244,9 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "aaa12125-2ad8-4f80-82b6-df4a89a282d4",
   "meta": {
-    "instanceId": "dfead19998a1d48134f2436792281345a90dd33c1f379e192812dfa90ad765c8"
+    "templateCredsSetupCompleted": false
   },
   "nodeGroups": [],
-  "id": "FCqcZvtFSoMH4wrv",
   "tags": []
 }

@@ -1,5 +1,5 @@
 {
-  "name": "Studio Inbox-Email Sorting & Enquiry Extraction",
+  "name": "Studio Inbox — Email Sorting and Enquiry Extraction",
   "nodes": [
     {
       "parameters": {
@@ -24,7 +24,7 @@
       "name": "Receive New Email",
       "credentials": {
         "gmailOAuth2": {
-          "id": "YEG83HbnF6pmvORn",
+          "id": "REPLACE_GMAIL_OAUTH_CREDENTIAL",
           "name": "Gmail account"
         }
       }
@@ -119,17 +119,13 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1gWFrXuA-_p41Z9cWpS10XyXEQUktbvFQW7TmCkDjfqY",
-          "mode": "list",
-          "cachedResultName": "Studio inbox-New Enquiries",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gWFrXuA-_p41Z9cWpS10XyXEQUktbvFQW7TmCkDjfqY/edit?usp=drivesdk"
+          "value": "YOUR_STUDIO_ENQUIRY_SPREADSHEET_ID",
+          "mode": "id"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gWFrXuA-_p41Z9cWpS10XyXEQUktbvFQW7TmCkDjfqY/edit#gid=0"
+          "mode": "id"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -251,7 +247,7 @@
       "name": "Save Client Enquiry",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "NjhzvGmla197txK6",
+          "id": "REPLACE_STUDIO_GOOGLE_SHEETS_CREDENTIAL",
           "name": "Google Sheets account"
         }
       }
@@ -276,9 +272,8 @@
       "name": "Classification AI Model",
       "credentials": {
         "anthropicApi": {
-          "id": null,
-          "name": "",
-          "__aiGatewayManaged": true
+          "id": "REPLACE_ANTHROPIC_API_CREDENTIAL",
+          "name": "Anthropic account"
         }
       }
     },
@@ -302,15 +297,14 @@
       "name": "Extraction AI Model",
       "credentials": {
         "anthropicApi": {
-          "id": null,
-          "name": "",
-          "__aiGatewayManaged": true
+          "id": "REPLACE_ANTHROPIC_API_CREDENTIAL",
+          "name": "Anthropic account"
         }
       }
     },
     {
       "parameters": {
-        "sendTo": "marylindamalachy64@gmail.com",
+        "sendTo": "owner.notifications@example.com",
         "subject": "[Existing Client] Client Update",
         "emailType": "text",
         "message": "={{ $json.text }}",
@@ -324,17 +318,16 @@
       ],
       "id": "4eeddc47-c144-4421-a0eb-96fc20171ab0",
       "name": "Send Existing Client Update1",
-      "webhookId": "1b37f4ce-d420-4f8e-ae58-96e13cc46f5f",
       "credentials": {
         "gmailOAuth2": {
-          "id": "YEG83HbnF6pmvORn",
+          "id": "REPLACE_GMAIL_OAUTH_CREDENTIAL",
           "name": "Gmail account"
         }
       }
     },
     {
       "parameters": {
-        "sendTo": "marylindamalachy64@gmail.com",
+        "sendTo": "owner.notifications@example.com",
         "subject": "[Job Application] New Application",
         "emailType": "text",
         "message": "={{ $('Receive New Email').item.json.text }}",
@@ -348,17 +341,16 @@
       ],
       "id": "3c55aa4b-eb24-457a-a469-ede6fd25c6aa",
       "name": "Job Application Update",
-      "webhookId": "467dfe09-6f5b-4382-9a39-d6622cfef968",
       "credentials": {
         "gmailOAuth2": {
-          "id": "YEG83HbnF6pmvORn",
+          "id": "REPLACE_GMAIL_OAUTH_CREDENTIAL",
           "name": "Gmail account"
         }
       }
     },
     {
       "parameters": {
-        "sendTo": "marylindamalachy64@gmail.com",
+        "sendTo": "owner.notifications@example.com",
         "subject": "[Spam] Spam Email Notification",
         "emailType": "text",
         "message": "={{ $('Receive New Email').item.json.text }}",
@@ -372,10 +364,9 @@
       ],
       "id": "87bb8290-6b1c-40cd-a5ba-269db884c971",
       "name": "Send Spam Notification",
-      "webhookId": "16cb3353-2924-49b7-995b-f1113711396b",
       "credentials": {
         "gmailOAuth2": {
-          "id": "YEG83HbnF6pmvORn",
+          "id": "REPLACE_GMAIL_OAUTH_CREDENTIAL",
           "name": "Gmail account"
         }
       }
@@ -406,7 +397,7 @@
     },
     {
       "parameters": {
-        "sendTo": "marylindamalachy64@gmail.com",
+        "sendTo": "owner.notifications@example.com",
         "subject": "[other] inbox message",
         "emailType": "text",
         "message": "={{ $('Receive New Email').item.json.text }}",
@@ -420,10 +411,9 @@
       ],
       "id": "21d7ff2d-0616-4516-ac54-beb0e0a9d229",
       "name": "Send Other Notification",
-      "webhookId": "45394202-e042-4474-8ecb-9da8c99f6e8f",
       "credentials": {
         "gmailOAuth2": {
-          "id": "YEG83HbnF6pmvORn",
+          "id": "REPLACE_GMAIL_OAUTH_CREDENTIAL",
           "name": "Gmail account"
         }
       }
@@ -448,9 +438,8 @@
       "name": "Anthropic Chat Model",
       "credentials": {
         "anthropicApi": {
-          "id": null,
-          "name": "",
-          "__aiGatewayManaged": true
+          "id": "REPLACE_ANTHROPIC_API_CREDENTIAL",
+          "name": "Anthropic account"
         }
       }
     },
@@ -470,74 +459,7 @@
       "name": "Draft Client Reply"
     }
   ],
-  "pinData": {
-    "Receive New Email": [
-      {
-        "json": {
-          "id": "1a0d0617c0ab085a",
-          "threadId": "1a0d0617c0ab085a",
-          "labelIds": [
-            "UNREAD",
-            "CATEGORY_PERSONAL",
-            "INBOX"
-          ],
-          "sizeEstimate": 7320,
-          "headers": {
-            "delivered-to": "Delivered-To: marylindamalachy@gmail.com",
-            "received": "Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])\r\n        by mx.google.com with SMTPS id 5a478bee46e88-33e899038b4sor1096377eec.1.2026.09.23.15.27.24\r\n        for <marylindamalachy@gmail.com>\r\n        (Google Transport Security);\r\n        Wed, 23 Sep 2026 15:27:24 -0700 (PDT)",
-            "x-received": "X-Received: by 2002:a05:7022:b055:20b0:144:c11c:3710 with SMTP id\r\n a92af1059eb24-1450402c2e1mr418952c88.31.1790202444185; Wed, 23 Sep 2026\r\n 15:27:24 -0700 (PDT)",
-            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1790202444; cv=none;\r\n        d=google.com; s=arc-20260327;\r\n        b=Fz6pX1t8GcT3OynVXx0UIYaQ4DtIqaXFdh/wITikWxFzscp8ocg77bRCVqLCHfwp2a\r\n         6vgLQKXhVWIoTdv5EpeUHtKikUr9IcljRq6GE8UrvkJhkGMfzhT1x2zAGzNSWAO1he5F\r\n         HA/uL1mjW3bpBoSaE61TuKZpPV0IVQzdmDy8gWQbcFqclQVJ5diYJ3aMqOMI4vB0J+3v\r\n         0MFhDcc0YZQS4IsPbsdgaQKROmMhpzQ2uAnmSBf5K/OBecO543SdLEKY53bWTH5IpuF+\r\n         sd3rBUKvrMgFdpAmyio3xOqm4pR6NbnMyZsAPPSMnlXtq+LDnQGp7gx3ZEXgnX7GXDca\r\n         H8Lw==",
-            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;\r\n        h=to:subject:message-id:date:from:mime-version:dkim-signature;\r\n        bh=DoV14Ca9uth+xRqLOzlLWHm+cyyPG1Hi2JQ+xZuLXLk=;\r\n        fh=cc0Nj1kDCxNyrlghLf/Jvr7i0nR27AsUTd+x94DRvfg=;\r\n        b=E6wE6KrlrNEb1c0szEv+HkhyYH2f8T+0EbYzEZtzzApm+JowTN/FvQO2S9Bnrbs042\r\n         KC3gLmGjPmTsweWwMm74U7oTthMT3RbgA8kvdaZPCIQsUWty+Y8kyPYh96N4t2yczIqi\r\n         P839dwsQKsvrb0WAIN9OF4uKHTXbPoskqwYvsDHn+8NOZ/NiW/COam793ek508K2vlik\r\n         ARlQSxBlQMwHQ/UY1f5B+a0GHSiFeHZ7MdtiEobvBk2gVRV40oQ9qvUvr0r5TejV7avx\r\n         /NUvlNYft4hZl/PTyx9ER2SUATGU8dWPfd+3BYuKTpAgGmWWPzBMe5K/WpxuxSIlcrO8\r\n         2Nzg==;\r\n        dara=google.com",
-            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com; arc=none",
-            "return-path": "Return-Path: <tedrachallen98@gmail.com>",
-            "received-spf": "Received-SPF: pass (google.com: domain of tedrachallen98@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;",
-            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@gmail.com header.s=20251104 header.b=X9CmHhV3;\r\n       arc=pass (i=1);\r\n       spf=pass (google.com: domain of tedrachallen98@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=tedrachallen98@gmail.com;\r\n       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;\r\n       dara=pass header.i=@gmail.com",
-            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\r\n        d=gmail.com; s=20251104; t=1790202444; x=1790807244; dara=google.com;\r\n        h=content-type:to:subject:message-id:date:from:mime-version:from:to\r\n         :cc:subject:date:message-id:reply-to:content-type;\r\n        bh=DoV14Ca9uth+xRqLOzlLWHm+cyyPG1Hi2JQ+xZuLXLk=;\r\n        b=X9CmHhV3DE5nPcGVnYPqpuaFkp/wzLD6K7HVgV1+WCKb1/wGrlpm5ZXfDsni2D3z4K\r\n         /Grlgo+lfC+IVrxVnVDlb0VbdcitAPghaWC1FpjZOFvCTg5gRS6Cz2DPsaiy4L63diEq\r\n         AZs8uHUig/tCQbqsYY6VONXZkEXd+seYxDFN6/PtmjFw36FQu6iH7seWImqpO2/7/oec\r\n         n5qlGvLV/nenOES5flcufeSKfNfZFg0ciXPNn/p1QDyzcOrgJI1ZKh9UxZjLU+JLSYfe\r\n         mH9aNZAv9YNQyefVPvMPqXHwR1A5EMawjA+ND7D2o8chGGxuev83F7IXQeJBP0dbQogl\r\n         sRog==",
-            "x-google-dkim-signature": "X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\r\n        d=1e100.net; s=20260707; t=1790202444; x=1790807244;\r\n        h=content-type:to:subject:message-id:date:from:mime-version:x-gm-gg\r\n         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to\r\n         :content-type;\r\n        bh=DoV14Ca9uth+xRqLOzlLWHm+cyyPG1Hi2JQ+xZuLXLk=;\r\n        b=FkBpVEJmsnh/KZ9n0RWp44XiyW5vNLSV/iHdjOmU8Nu8ZxWB0/W5DGDHub3y6ZwNGu\r\n         UKIEK4IuxOrNqdvWKrMMZaKp96CRZS+bkr/AjeyBgNRy2x8sEGtKsEbIu9m0JAKJTvER\r\n         JuQu7QoUu2s4F5kxc/WEkKk67uSi2UX20S9alBswOLDoKMrk/S97Pgmg2thejXjz98G8\r\n         D8cNiKEfyCYyDIe4SZGjig/V0rhjI0v3w0LCaIHfrEvPPhvDPfQlDj4ja7NkBr6EM6Ze\r\n         COw7G4UATsjg63YueRNv0V+UJ8IkUyqQIzEiDdEiJ9UB0DilJhrTGGvnKIva+ADuPrrS\r\n         Umhw==",
-            "x-gm-message-state": "X-Gm-Message-State: AFuF++ldtOcrH+NKuienAw1rHKuZA5jMUkkE32cPR5bYnDDkzb3CCpD3\r\n\tWbDmltkzI45U6hXUOv9nK/kPOd1AxGiaROkoUOQwC2e1U8nQIx9RNX4KVnrysp3gRPHjp/G/Owh\r\n\tu/fLkRzFqiQPZGgzkskdEWf5MtrBnF3dYppla",
-            "x-gm-gg": "X-Gm-Gg: AYBFou1apd/3HRSJKunpuxeBB0bgTEioLinjHoFMV2Al5/IYolajWszKKI0wT8qUAcS\r\n\tgrzS/ysn7uRTi5QxXOc9t3teXz0tfQDSqKyfsqY1RWkkk5VUhdgVn4e9SFAd4BuHOcf08ZUjXgD\r\n\tE9eFC/J+nfNPSmho6S8SKOOxImDIB4JZmyyZGtdwIB7B0rZpMm3buVa6yejBp5lytyZyL9eVuu2\r\n\tl0XhUAhjMH7m2G6qGDhGEX2azx7xjZd7RBQ2t8InKjAaXeIGWmJZc7ULlSJelnBT7RmjOQar9TF\r\n\tCfyKmKFTbLNNu86/fLvt/okS3cRoPBErcWyiSsM/oCHtsF7IcC8hVienuR3QaT3cyQ==",
-            "mime-version": "MIME-Version: 1.0",
-            "from": "From: Marylinda Oluoma <tedrachallen98@gmail.com>",
-            "date": "Date: Wed, 23 Sep 2026 23:27:13 +0100",
-            "x-gm-features": "X-Gm-Features: AclHuK-fm9e79jJudBnmjzk8-RLeV0R1eVTvjSNu1snMJ7ldj1X7s4Ab8ujykLo",
-            "message-id": "Message-ID: <CAKj6CF91Re2CM06Pdnjinde6J3PPCHp7sffv346pLmEW8j+wRw@mail.gmail.com>",
-            "subject": "Subject: Project Update",
-            "to": "To: Marylinda Malachy <marylindamalachy@gmail.com>",
-            "content-type": "Content-Type: multipart/alternative; boundary=\"000000000000c304cb065c2dfcd8\""
-          },
-          "html": "<div dir=\"auto\">Hi, I wanted to give you an update on my house project. Could you please let me know when the next site visit will be?<div dir=\"auto\">Thank you.</div></div>\n",
-          "text": "Hi, I wanted to give you an update on my house project. Could you please\nlet me know when the next site visit will be?\nThank you.\n",
-          "textAsHtml": "<p>Hi, I wanted to give you an update on my house project. Could you please<br/>let me know when the next site visit will be?<br/>Thank you.</p>",
-          "subject": "Project Update",
-          "date": "2026-09-23T22:27:13.000Z",
-          "to": {
-            "value": [
-              {
-                "address": "marylindamalachy@gmail.com",
-                "name": "Marylinda Malachy"
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Marylinda Malachy</span> &lt;<a href=\"mailto:marylindamalachy@gmail.com\" class=\"mp_address_email\">marylindamalachy@gmail.com</a>&gt;</span>",
-            "text": "\"Marylinda Malachy\" <marylindamalachy@gmail.com>"
-          },
-          "from": {
-            "value": [
-              {
-                "address": "tedrachallen98@gmail.com",
-                "name": "Marylinda Oluoma"
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Marylinda Oluoma</span> &lt;<a href=\"mailto:tedrachallen98@gmail.com\" class=\"mp_address_email\">tedrachallen98@gmail.com</a>&gt;</span>",
-            "text": "\"Marylinda Oluoma\" <tedrachallen98@gmail.com>"
-          },
-          "messageId": "<CAKj6CF91Re2CM06Pdnjinde6J3PPCHp7sffv346pLmEW8j+wRw@mail.gmail.com>"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "Receive New Email": {
       "main": [
@@ -661,12 +583,9 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "a84ea407-9710-440e-be0a-0958b9d7a57b",
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "36895988e3e657f4cbe8c09672b8f78677ebb9c174186fd2f3776fb441ad888d"
+    "templateCredsSetupCompleted": false
   },
   "nodeGroups": [],
-  "id": "3hCVsgTA5NUiOlYe",
   "tags": []
 }

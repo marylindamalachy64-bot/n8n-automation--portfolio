@@ -1,99 +1,70 @@
-# AI Automation Portfolio
+# AI automation portfolio
 
-Welcome to my AI Automation portfolio.
+Exported automation workflows by Marylinda Malachy.
 
-I am learning and building practical automation workflows using **n8n, AI agents, APIs, Google Workspace, and business automation tools**.
+I am learning n8n, voice agents, and API-based business automation. This repository is public so the workflow files and the notes next to them can be reviewed. The current files use placeholders instead of live account data. Older Git commits are unchanged. [Privacy and Git history](docs/privacy-and-history.md) explains that limit and the cleanup plan.
 
-This repository contains my automation projects, workflow experiments, and practical assignments as I develop my skills in AI-powered business process automation.
+No license is specified.
 
-## 🚀 Projects
+## Status words
 
-### 1. Studio Inbox – AI Email Classification & Lead Extraction
+| Word | Meaning here |
+| --- | --- |
+| Exported | The workflow or assistant file is in the current tree. |
+| Built | The file contains a constructed node graph or assistant configuration. |
+| Not run here | This repository has no execution log, call transcript, screenshot, demo video, or saved successful result. |
+| Unfinished | A behavior is named in a prompt or an older note, but this export does not implement it. |
 
-An AI-powered email automation workflow built with n8n.
+Sample rows and the scoring example below are synthetic or were calculated locally from the scoring code. They are not n8n or Vapi runs.
 
-**What it does:**
-- Receives incoming emails through Gmail
-- Classifies emails into relevant categories
-- Extracts structured information from new client enquiries
-- Validates important lead information
-- Stores qualified lead data in Google Sheets
+## Inventory
 
-**Tools:**
-- n8n
-- Gmail
-- AI / OpenAI
-- Google Sheets
+| Project | What the file contains | Status |
+| --- | --- | --- |
+| [Studio Inbox](projects/studio-inbox/README.md) | [13-node n8n workflow](projects/studio-inbox/studio-inbox-email-sorting.json). Classifies Gmail with Anthropic Claude, extracts new-enquiry fields, appends a Google Sheet, and notifies a fixed mailbox. | Exported and built. Not run here. Replies to the sender are unfinished. |
+| [PharmaCare customer support](projects/pharmacare/README.md) | [15-node n8n workflow](projects/pharmacare/pharmacare-customer-support.json) for a fictional community pharmacy. Classifies Gmail, runs an OpenAI agent against an in-memory vector store, and escalates the non-support branch. | Exported and built. Not run here. Customer replies and the separate error-handler workflow are unfinished. |
+| [Lead enrichment and CRM](projects/lead-enrichment/README.md) | [14-node n8n workflow](projects/lead-enrichment/lead-enrichment-crm-pipeline.json): webhook, validation, two Apify actors, scoring, a HubSpot create-or-update node, an error-log sheet, and a manual fixture that POSTs synthetic leads. | Exported and built. Not run here. An older README called this planned only. A separate duplicate-search branch is unfinished. |
+| [Sophie receptionist](projects/sophie-receptionist/README.md) | [Vapi assistant export](projects/sophie-receptionist/sophie-assistant.json) for a fictional plumbing receptionist. The prompt, model, voice settings, and transcriber settings are included. Six tool IDs have no tool definitions. | Exported configuration. Not run here. The six tools are missing from this repository. |
+| [Manual five-step demo](projects/manual-five-step-demo/README.md) | [5-node manual n8n workflow](projects/manual-five-step-demo/manual-five-step-event-routing.json): trigger, set a synthetic registration list, split rows, rename fields, and switch on ticket type. | Exported and built. Not run here. It does not call YouTube. |
 
----
+## Technologies present in these files
 
-### 2. PharmaCare – AI Customer Support Automation
+n8n, Gmail, Google Sheets, Google Drive, Anthropic Claude, OpenAI chat and embeddings, an in-memory vector store, Apify, HubSpot, Vapi, ElevenLabs, and Deepgram.
 
-An AI-powered customer support workflow for a fictional community pharmacy.
+This is an inventory of nodes and settings. It is not a scored skills list, and it is not evidence that each integration ran successfully.
 
-**What it does:**
-- Receives customer emails through Gmail
-- Classifies support and non-support emails
-- Uses an AI Agent to answer routine questions
-- Retrieves approved information from a vector knowledge base
-- Sends replies within the original Gmail conversation
-- Escalates emails requiring human attention
-- Includes workflow error notifications
+## PharmaCare context
 
-**Tools:**
-- n8n
-- Gmail
-- OpenAI
-- Simple Vector Store
-- OpenAI Embeddings
-- Google Drive
+I have a BPharm background. PharmaCare is a learning workflow set in a fictional community pharmacy. It is not a clinical product, it has not been clinically validated, and it is not a record of pharmacy software in production. The [PharmaCare notes](projects/pharmacare/README.md) separate prompt instructions from nodes that are actually connected.
 
----
+## Layout
 
-### 3. Lead Generation & CRM Automation
+Each project folder has a README and one export. Previous root filenames remain only in Git history on `main`:
 
-A lead-processing automation project using external data providers and CRM integration.
+| Previous path | Current path |
+| --- | --- |
+| `Studio Inbox-Email Sorting & Enquiry Extraction.json` | [projects/studio-inbox/studio-inbox-email-sorting.json](projects/studio-inbox/studio-inbox-email-sorting.json) |
+| `PharmaCare AI Customer Support.json` | [projects/pharmacare/pharmacare-customer-support.json](projects/pharmacare/pharmacare-customer-support.json) |
+| `Lead Enrichment & CRM Pipeline main (1).json` | [projects/lead-enrichment/lead-enrichment-crm-pipeline.json](projects/lead-enrichment/lead-enrichment-crm-pipeline.json) |
+| `Sophie .json` | [projects/sophie-receptionist/sophie-assistant.json](projects/sophie-receptionist/sophie-assistant.json) |
+| `youtube-research-automation.json` | [projects/manual-five-step-demo/manual-five-step-event-routing.json](projects/manual-five-step-demo/manual-five-step-event-routing.json) |
 
-**Planned workflow:**
-- Receive lead information
-- Enrich company and contact information using APIs
-- Apply qualification rules
-- Create qualified leads in HubSpot CRM
-- Detect duplicate leads
-- Record failed leads and readable errors
-- Test the workflow with successful and intentionally failed leads
+The old YouTube filename described research automation. The exported graph is the five-step manual demo.
 
-**Tools:**
-- n8n
-- Apify
-- HubSpot CRM
-- Google Sheets
-- APIs
+## Checks
 
----
+From the repository root, these commands read the current files only. They do not call n8n, Vapi, Google, Apify, HubSpot, or any other external service.
 
-## 🛠️ Skills & Technologies
+```bash
+python3 scripts/check_sanitization.py
+python3 scripts/check_docs.py
+```
 
-- n8n
-- AI Agents
-- OpenAI
-- Prompt Engineering
-- RAG & Vector Databases
-- API Integrations
-- Gmail Automation
-- Google Sheets
-- Google Drive
-- HubSpot CRM
-- Apify
-- Workflow Automation
-- Data Extraction
-- Error Handling
-- Business Process Automation
+## Still to do outside this branch
 
-## 🎯 Learning Focus
-
-I am currently developing practical skills in **AI automation and workflow development**, with a focus on building reliable systems that can reduce repetitive business tasks and improve operational efficiency.
-
-## 📌 About This Repository
-
-This portfolio is continuously updated as I build and document new automation projects, experiments, and real-world workflow solutions.
+- Review this change before it is merged. Merging does not erase older commits.
+- Replace the placeholders in a private n8n or Vapi account and run the checklist in each project README.
+- Add screenshots or a demo video only after a real run.
+- Follow [Privacy and Git history](docs/privacy-and-history.md) if the older commits should stop being publicly readable.
+- Build Sophie's six tools before expecting the receptionist to call them.
+- Choose a license if other people should have permission to reuse the files. None is set.
